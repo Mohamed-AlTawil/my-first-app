@@ -1,0 +1,10 @@
+POST http://localhost:8000/books/create HTTP/1.1
+content-type: application/json
+
+{
+"title":"test",
+"author":"6300e18d3bbd975cf645998c",
+"summary":"summary",
+"isbn":"isbn",
+"genre":["6300e18d3bbd975cf645998e"]
+}
