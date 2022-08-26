@@ -1,24 +1,24 @@
-import { PopulatedDoc, Document, Types } from "mongoose";
+import { PopulatedDoc, Document } from "mongoose";
 
 export interface Author {
-  _id: Types.ObjectId;
+  _id?: string;
   first_name: string;
   family_name: string;
   date_of_birth: Date;
   date_of_death: Date;
-  url: string;
+  url?: string;
 }
 export interface Book {
-  _id: Types.ObjectId;
+  _id?: string;
   title: string;
-  author: PopulatedDoc<Author & Document>;
+  author: string | Author;
   summary: string;
   isbn: string;
-  genre: Array<PopulatedDoc<Genre & Document>>;
-  url: string;
+  genre?: string[] | Genre[];
+  url?: string;
 }
 export interface BookInstance {
-  _id: Types.ObjectId;
+  _id: string;
   book: PopulatedDoc<Book & Document>;
   imprint: string;
   status: "Available" | "Maintenance" | "Loaned" | "Reserved";
@@ -26,7 +26,7 @@ export interface BookInstance {
   url: string;
 }
 export interface Genre {
-  _id: Types.ObjectId;
+  _id: string;
   name: string;
   url: string;
 }

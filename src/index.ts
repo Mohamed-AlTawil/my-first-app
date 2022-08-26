@@ -1,11 +1,13 @@
-import express, { Express, Request, Response } from "express";
+import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import swaggerUi from "swagger-ui-express";
+import BookRoutes from "./routes/bookRoutes";
 
 dotenv.config();
 
-const app: Express = express();
+const app: Application = express();
 const port = process.env.PORT;
 const uri: string = process.env.DATABASE_URI ?? "";
 
@@ -18,15 +20,24 @@ connection.once("open", async () => {
   const AuthorModel = require("./models/author");
 });
 
+app.use(express.json());
 app.use(
   bodyParser.urlencoded({
     extended: false,
   })
 );
 app.use(bodyParser.json());
-
-const bookRouter = require("./routes/bookRoute");
-app.use("/books", bookRouter);
+app.use(express.static("public"));
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/swagger.json",
+    },
+  })
+);
+app.use("/books", BookRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
