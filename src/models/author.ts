@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { Author } from "../types/interfaces";
+import { IAuthor } from "../types/interfaces";
 
-const AuthorSchema = new Schema<Author>({
+const AuthorSchema = new Schema<IAuthor>({
   first_name: { type: String, required: true, maxLength: 100 },
   family_name: { type: String, required: true, maxLength: 100 },
   date_of_birth: { type: Date },
@@ -28,4 +28,4 @@ AuthorSchema.virtual("url").get(function () {
 });
 
 //Export model
-module.exports = model<Author>("Author", AuthorSchema);
+module.exports = model<IAuthor>("Author", AuthorSchema);

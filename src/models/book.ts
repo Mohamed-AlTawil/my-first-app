@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { Book } from "../types/interfaces";
+import { IBook } from "../types/interfaces";
 
-const BookSchema = new Schema<Book>({
+const BookSchema = new Schema<IBook>({
   title: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: "Author", required: true },
   summary: { type: String, required: true },
@@ -11,8 +11,8 @@ const BookSchema = new Schema<Book>({
 
 // Virtual for book's URL
 BookSchema.virtual("url").get(function () {
-  return "/catalog/book/" + this._id;
+  return "www.booklibrary.com/books/" + this._id;
 });
 
 //Export model
-module.exports = model<Book>("Book", BookSchema);
+module.exports = model<IBook>("Book", BookSchema);

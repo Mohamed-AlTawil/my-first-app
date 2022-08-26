@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { Genre } from "../types/interfaces";
+import { IGenre } from "../types/interfaces";
 
-const GenreSchema = new Schema<Genre>({
+const GenreSchema = new Schema<IGenre>({
   name: { type: String, required: true, minlength: 3, maxLength: 100 },
 });
 
@@ -11,4 +11,4 @@ GenreSchema.virtual("url").get(function () {
 });
 
 //Export model
-module.exports = model<Genre>("Genre", GenreSchema);
+module.exports = model<IGenre>("Genre", GenreSchema);

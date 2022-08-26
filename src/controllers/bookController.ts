@@ -1,73 +1,88 @@
-import { Request, Response } from "express";
+import {
+  Get,
+  Post,
+  Route,
+  SuccessResponse,
+  Body,
+  Response,
+  Example,
+  Delete,
+  Path,
+  Put,
+} from "tsoa";
+import { IBook } from "../types/interfaces";
+import { Model } from "mongoose";
 
-const BookModel = require("../models/book");
+const BookModel: Model<IBook> = require("../models/book");
 
-// Display list of all books.
-exports.book_list = (req: Request, res: Response) => {
-  BookModel.find()
-    .populate("author")
-    .then(async (centers: any) => {
-      res.json(centers);
-    })
-    .catch((err: any) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
-};
+@Route("books")
+export default class BookController {
+  /**
+   * Get List of All books
+   */
+  @Get("/")
+  public async getBooks(): Promise<IBook[]> {
+    return await BookModel.find();
+  }
 
-// Display detail page for a specific book.
-exports.book_detail = (req: Request, res: Response) => {
-  BookModel.findById(req.params.id)
-    .then((book: any) => res.json(book))
-    .catch((err: any) => res.status(400).json(err));
-};
+  /**
+   * Get a book details
+   * @example bookId "6300e18d3bbd975cf6459994"
+   */
+  @Response(404, "the requested book in not found")
+  @Get("{bookId}")
+  public async getBook(bookId: string): Promise<IBook | null> {
+    return await BookModel.findById(bookId);
+  }
+  /**
+   * Delete a book
+   * @example bookId "6300e18d3bbd975cf6459994"
+   */
+  @Response(404, "the requested book in not found")
+  @SuccessResponse("200", "Deleted")
+  @Delete("{bookId}")
+  public async deleteBook(bookId: string) {
+    return await BookModel.findByIdAndDelete(bookId);
+  }
 
-// Handle book create on POST.
-exports.book_create_post = (req: any, res: Response) => {
-  const title = req.body.title;
-  const author = req.body.author;
-  const summary = req.body.summary;
-  const isbn = req.body.isbn;
-  const genre = req.body.genre;
-  const book = new BookModel({
-    title,
-    author,
-    summary,
-    isbn,
-    genre,
-  });
-  book
-    .save()
-    .then(async (e: any) => {
-      res.json("Book Inserted!");
-    })
-    .catch((err: any) => res.status(400).json(err));
-};
+  /**
+   * Create a book
+   */
+  @Response(422, "Validation Failed")
+  @SuccessResponse("200", "Created")
+  @Example<IBook>({
+    title: "Book Tiltle",
+    author: "6300e18b3bbd975cf6459983",
+    summary: "Book Summary",
+    isbn: "Book isbn",
+    genre: ["6300e18d3bbd975cf645998e"],
+  })
+  @Post("create")
+  public async createBook(@Body() book: IBook): Promise<IBook> {
+    return new BookModel({
+      ...book,
+    }).save();
+  }
 
-// Handle book delete on POST.
-exports.book_delete_post = (req: Request, res: Response) => {
-  BookModel.findByIdAndDelete(req.params.id)
-    .then((e: any) => {
-      res.json("Book Deleted.");
-    })
-    .catch((err: any) => res.status(400).json(err));
-};
-
-// Handle book update on POST.
-exports.book_update_post = (req: Request, res: Response) => {
-  BookModel.findById(req.params.id)
-    .then((book: any) => {
-      book.title = req.body.title;
-      book.author = req.body.author;
-      book.summary = req.body.summary;
-      book.isbn = req.body.isbn;
-      book.genre = req.body.genre;
-      book
-        .save()
-        .then((e: any) => {
-          res.json("Book Updated!");
-        })
-        .catch((err: any) => res.status(400).json(err));
-    })
-    .catch((err: any) => res.status(400).json(err));
-};
+  /**
+   * Update a book
+   */
+  @Response(422, "Validation Failed")
+  @SuccessResponse("200", "updated")
+  @Put("update/{bookId}")
+  public async updateBook(
+    @Path() bookId: string,
+    @Body() book: Partial<IBook>
+  ): Promise<IBook | null> {
+    let bookDocument = await BookModel.findById(bookId);
+    if (bookDocument != null) {
+      bookDocument.title = book.title ?? bookDocument.title;
+      bookDocument.author = book.author ?? bookDocument.author;
+      bookDocument.summary = book.summary ?? bookDocument.summary;
+      bookDocument.isbn = book.isbn ?? bookDocument.isbn;
+      bookDocument.genre = book.genre ?? bookDocument.genre;
+      return await bookDocument.save();
+    }
+    return null;
+  }
+}

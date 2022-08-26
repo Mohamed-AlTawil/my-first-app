@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { BookInstance } from "../types/interfaces";
+import { IBookInstance } from "../types/interfaces";
 
-const BookInstanceSchema = new Schema<BookInstance>({
+const BookInstanceSchema = new Schema<IBookInstance>({
   book: { type: Schema.Types.ObjectId, ref: "Book", required: true }, //reference to the associated book
   imprint: { type: String, required: true },
   status: {
@@ -19,4 +19,4 @@ BookInstanceSchema.virtual("url").get(function () {
 });
 
 //Export model
-module.exports = model<BookInstance>("BookInstance", BookInstanceSchema);
+module.exports = model<IBookInstance>("BookInstance", BookInstanceSchema);

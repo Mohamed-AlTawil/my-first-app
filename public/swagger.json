@@ -1,0 +1,437 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"Types.ObjectId": {
+				"type": "string"
+			},
+			"IAuthor": {
+				"description": "this is an author interface",
+				"properties": {
+					"_id": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"first_name": {
+						"type": "string",
+						"description": "this only first name"
+					},
+					"family_name": {
+						"type": "string"
+					},
+					"date_of_birth": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"date_of_death": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"first_name",
+					"family_name",
+					"date_of_birth",
+					"date_of_death"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IGenre": {
+				"properties": {
+					"_id": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IBook": {
+				"properties": {
+					"_id": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"title": {
+						"type": "string"
+					},
+					"author": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"$ref": "#/components/schemas/IAuthor"
+							}
+						]
+					},
+					"summary": {
+						"type": "string"
+					},
+					"isbn": {
+						"type": "string"
+					},
+					"genre": {
+						"anyOf": [
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"$ref": "#/components/schemas/Types.ObjectId"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"$ref": "#/components/schemas/IGenre"
+								},
+								"type": "array"
+							}
+						]
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"title",
+					"author",
+					"summary",
+					"isbn"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"FlattenMaps_T_": {
+				"properties": {},
+				"type": "object"
+			},
+			"Document_any.any.any_": {
+				"$ref": "#/components/schemas/FlattenMaps_T_",
+				"description": "Generic types for Document:\n*  T - the type of _id\n*  TQueryHelpers - Object with any helpers that should be mixed into the Query type\n*  DocType - the type of the actual Document created"
+			},
+			"Required_any_": {
+				"properties": {},
+				"type": "object",
+				"description": "Make all properties in T required"
+			},
+			"Partial_IBook_": {
+				"properties": {
+					"_id": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"title": {
+						"type": "string"
+					},
+					"author": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"$ref": "#/components/schemas/Types.ObjectId"
+							},
+							{
+								"$ref": "#/components/schemas/IAuthor"
+							}
+						]
+					},
+					"summary": {
+						"type": "string"
+					},
+					"isbn": {
+						"type": "string"
+					},
+					"genre": {
+						"anyOf": [
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"$ref": "#/components/schemas/Types.ObjectId"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"$ref": "#/components/schemas/IGenre"
+								},
+								"type": "array"
+							}
+						]
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "my-first-app",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/books": {
+			"get": {
+				"operationId": "GetBooks",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IBook"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get List of All books",
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/books/{bookId}": {
+			"get": {
+				"operationId": "GetBook",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/IBook"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "the requested book in not found"
+					}
+				},
+				"description": "Get a book details",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "bookId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "6300e18d3bbd975cf6459994"
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteBook",
+				"responses": {
+					"200": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/Document_any.any.any_"
+										},
+										{
+											"$ref": "#/components/schemas/IBook"
+										},
+										{
+											"$ref": "#/components/schemas/Required_any_"
+										}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "the requested book in not found"
+					}
+				},
+				"description": "Delete a book",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "bookId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "6300e18d3bbd975cf6459994"
+					}
+				]
+			}
+		},
+		"/books/create": {
+			"post": {
+				"operationId": "CreateBook",
+				"responses": {
+					"200": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IBook"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"title": "Book Tiltle",
+											"author": "6300e18b3bbd975cf6459983",
+											"summary": "Book Summary",
+											"isbn": "Book isbn",
+											"genre": [
+												"6300e18d3bbd975cf645998e"
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Failed"
+					}
+				},
+				"description": "Create a book",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IBook"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/books/update/{bookId}": {
+			"put": {
+				"operationId": "UpdateBook",
+				"responses": {
+					"200": {
+						"description": "updated",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/IBook"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Failed"
+					}
+				},
+				"description": "Update a book",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "bookId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_IBook_"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
