@@ -11,7 +11,7 @@ import {
   Put,
 } from "tsoa";
 import { Book } from "../types/interfaces";
-import { Model, Types } from "mongoose";
+import { Model } from "mongoose";
 
 const BookModel: Model<Book> = require("../models/book");
 
@@ -21,8 +21,8 @@ export default class BookController {
    * Get List of All books
    */
   @Get("/")
-  public async get(): Promise<Array<Book>> {
-    return await BookModel.find().populate("author");
+  public async getBooks(): Promise<Array<Book>> {
+    return await BookModel.find();
   }
   /**
    * Get a book details
@@ -31,7 +31,7 @@ export default class BookController {
   @Response(404, "the requested book in not found")
   @Get("{bookId}")
   public async getBook(bookId: string): Promise<Book | null> {
-    return await BookModel.findById(bookId).populate("author");
+    return await BookModel.findById(bookId);
   }
   /**
    * Delete a book
@@ -67,7 +67,7 @@ export default class BookController {
    * Update a book
    */
   @Response(422, "Validation Failed")
-  @SuccessResponse("200", "Created")
+  @SuccessResponse("200", "Updated")
   @Put("update/{bookId}")
   public async updateBook(
     @Path() bookId: string,

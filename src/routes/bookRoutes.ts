@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/", (_req, res) => {
   const controller = new BookController();
   controller
-    .get()
+    .getBooks()
     .then((response) => {
       res.send(response);
     })

@@ -1,4 +1,4 @@
-import { PopulatedDoc, Document } from "mongoose";
+import { PopulatedDoc, Document, Types } from "mongoose";
 
 export interface Author {
   _id?: string;
@@ -9,16 +9,19 @@ export interface Author {
   url?: string;
 }
 export interface Book {
-  _id?: string;
+  _id?: string | Types.ObjectId;
   title: string;
-  author: string | Author;
+  /**
+   * The author should be one of the Autors
+   */
+  author: string | Types.ObjectId | Author;
   summary: string;
   isbn: string;
-  genre?: string[] | Genre[];
+  genre?: string[] | Types.ObjectId | Genre[];
   url?: string;
 }
 export interface BookInstance {
-  _id: string;
+  _id: string | Types.ObjectId;
   book: PopulatedDoc<Book & Document>;
   imprint: string;
   status: "Available" | "Maintenance" | "Loaned" | "Reserved";

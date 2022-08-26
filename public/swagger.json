@@ -74,7 +74,8 @@
 							{
 								"$ref": "#/components/schemas/Author"
 							}
-						]
+						],
+						"description": "The author should be one of the Autors document"
 					},
 					"summary": {
 						"type": "string"
@@ -140,7 +141,8 @@
 							{
 								"$ref": "#/components/schemas/Author"
 							}
-						]
+						],
+						"description": "The author should be one of the Autors document"
 					},
 					"summary": {
 						"type": "string"
@@ -337,7 +339,7 @@
 				"operationId": "UpdateBook",
 				"responses": {
 					"200": {
-						"description": "Created",
+						"description": "Updated",
 						"content": {
 							"application/json": {
 								"schema": {
